@@ -37,7 +37,7 @@ function speak(t){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(
 function openMonth(name,days,info){
   modalTitle.textContent=name;
   modalDays.textContent=days;
-  modalDetails.innerHTML='<h3>מידע על החודש</h3><p>'+info+'</p>';
+  modalDetails.innerHTML='<section class="detailSection"><h3>מידע על החודש</h3><p>'+info+'</p></section><section class="detailSection"><h3>פירוט נוסף</h3><p>מקור השם, ההיסטוריה, המיקום בלוח, מועדים מרכזיים ועובדה מעניינת יוצגו כאן בצורה מסודרת.</p></section>';
   currentMonthText=name+". "+days+". "+info;
   modal.hidden=false;
   document.body.classList.add("modalOpen");
