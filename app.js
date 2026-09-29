@@ -27,9 +27,56 @@ gregorian:{title:"הלוח הלועזי – הגרגוריאני",intro:"הלו�
 ["נובמבר","30 ימים","שמו מן הלטינית novem – תשע."],
 ["דצמבר","31 ימים","שמו מן הלטינית decem – עשר."]
 ]}};
+
 const home=document.querySelector("#home"),cal=document.querySelector("#calendar"),months=document.querySelector("#months");
+const modal=document.querySelector("#monthModal"),modalTitle=document.querySelector("#modalTitle"),modalDays=document.querySelector("#modalDays"),modalDetails=document.querySelector("#modalDetails"),modalSpeak=document.querySelector("#modalSpeak");
+let currentMonthText="";
+
 function speak(t){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="he-IL";speechSynthesis.speak(u)}
-function openCalendar(key){const d=data[key];document.querySelector("#calendarTitle").textContent=d.title;document.querySelector("#calendarIntro").textContent=d.intro;months.innerHTML="";d.months.forEach(([name,days,info])=>{const el=document.createElement("article");el.className="card";el.innerHTML='<h3>'+name+'</h3><div class="meta">'+days+'</div><p>'+info+'</p><button class="speak">🔊 הקראה</button>';el.querySelector(".speak").onclick=()=>speak(name+". "+days+". "+info);months.appendChild(el)});home.classList.remove("active");cal.classList.add("active");scrollTo(0,0)}
-document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openCalendar(b.dataset.open));document.querySelector("#backBtn").onclick=()=>{speechSynthesis.cancel();cal.classList.remove("active");home.classList.add("active");scrollTo(0,0)};
-let deferred;const install=document.querySelector("#installBtn");addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;install.hidden=false});install.onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;install.hidden=true};addEventListener("appinstalled",()=>install.hidden=true);
+
+function openMonth(name,days,info){
+  modalTitle.textContent=name;
+  modalDays.textContent=days;
+  modalDetails.innerHTML='<h3>מידע על החודש</h3><p>'+info+'</p>';
+  currentMonthText=name+". "+days+". "+info;
+  modal.hidden=false;
+  document.body.classList.add("modalOpen");
+  setTimeout(()=>document.querySelector("#modalClose").focus(),0);
+}
+function closeMonth(){
+  speechSynthesis.cancel();
+  modal.hidden=true;
+  document.body.classList.remove("modalOpen");
+}
+
+function openCalendar(key){
+  const d=data[key];
+  document.querySelector("#calendarTitle").textContent=d.title;
+  document.querySelector("#calendarIntro").textContent=d.intro;
+  months.innerHTML="";
+  d.months.forEach(([name,days,info])=>{
+    const el=document.createElement("button");
+    el.className="card monthButton";
+    el.type="button";
+    el.setAttribute("aria-label","פתיחת פרטים על חודש "+name);
+    el.innerHTML='<h3>'+name+'</h3><div class="meta">'+days+'</div><div class="openHint">לחצו לפרטים ←</div>';
+    el.onclick=()=>openMonth(name,days,info);
+    months.appendChild(el);
+  });
+  home.classList.remove("active");
+  cal.classList.add("active");
+  scrollTo(0,0);
+}
+
+document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openCalendar(b.dataset.open));
+document.querySelector("#backBtn").onclick=()=>{speechSynthesis.cancel();cal.classList.remove("active");home.classList.add("active");scrollTo(0,0)};
+document.querySelector("#modalClose").onclick=closeMonth;
+document.querySelectorAll("[data-close-modal]").forEach(el=>el.onclick=closeMonth);
+modalSpeak.onclick=()=>speak(currentMonthText);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)closeMonth()});
+
+let deferred;const install=document.querySelector("#installBtn");
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;install.hidden=false});
+install.onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;install.hidden=true};
+addEventListener("appinstalled",()=>install.hidden=true);
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
