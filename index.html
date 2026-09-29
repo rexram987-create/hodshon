@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17324d"><meta name="description" content="חודשון – מכירים את חודשי הלוח העברי והלועזי">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>חודשון</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div><h1>חודשון</h1><p>חודשי השנה, השמות והסיפורים שמאחוריהם</p></div><button id="installBtn" hidden>התקנת היישומון</button></header>
+<main>
+<section id="home" class="view active">
+  <div class="hero"><img src="icon.svg" alt=""><h2>איזה לוח שנה נרצה להכיר?</h2><p>בחרו לוח שנה כדי לעבור לחודשים שלו.</p></div>
+  <div class="choices">
+   <button class="calendarChoice hebrew" data-open="hebrew"><span>✡️</span><strong>הלוח העברי</strong><small>מתשרי ועד אלול</small></button>
+   <button class="calendarChoice gregorian" data-open="gregorian"><span>📅</span><strong>הלוח הלועזי</strong><small>מינואר ועד דצמבר</small></button>
+  </div>
+</section>
+<section id="calendar" class="view">
+ <div class="toolbar"><button id="backBtn">← חזרה</button><div><h2 id="calendarTitle"></h2><p id="calendarIntro"></p></div></div>
+ <div id="months" class="months"></div>
+</section>
+</main>
+<footer>חודשון • יישומון לימודי על חודשי השנה</footer>
+<script src="app.js"></script>
+</body></html>
