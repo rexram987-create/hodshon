@@ -15,6 +15,14 @@
    <button class="calendarChoice hebrew" data-open="hebrew"><span>✡️</span><strong>הלוח העברי</strong><small>מתשרי ועד אלול</small></button>
    <button class="calendarChoice gregorian" data-open="gregorian"><span>📅</span><strong>הלוח הלועזי</strong><small>מינואר ועד דצמבר</small></button>
   </div>
+  <section class="holidayHome" aria-labelledby="holidayHomeTitle">
+    <h2 id="holidayHomeTitle">חגים ומועדים</h2>
+    <p>הסיפורים, המשמעות והמנהגים של החגים</p>
+    <div class="choices">
+      <button class="calendarChoice hebrew" data-holidays="jewish"><span>🕎</span><strong>חגים יהודיים</strong><small>חגים ומועדים לאורך השנה</small></button>
+      <button class="calendarChoice christian" data-holidays="christian"><span>🔔</span><strong>חגים נוצריים</strong><small>מסורות ומועדים בכנסיות השונות</small></button>
+    </div>
+  </section>
   <section class="songLinks" aria-labelledby="songLinksTitle">
     <h2 id="songLinksTitle">🎵 שניים עשר ירחים – נעמי שמר</h2>
     <p>השיר הקלאסי שמלווה את חודשי השנה העברית.</p>
@@ -27,6 +35,15 @@
 <section id="calendar" class="view">
  <div class="toolbar"><button id="backBtn">← חזרה</button><div><h2 id="calendarTitle"></h2><p id="calendarIntro"></p></div></div>
  <div id="months" class="months"></div>
+</section>
+<section id="holidaysView" class="view">
+ <div class="toolbar"><button id="holidaysBackBtn">← חזרה</button><div><h2 id="holidaysTitle"></h2><p id="holidaysIntro"></p></div></div>
+ <div id="holidayCards" class="months"></div>
+ <section class="detailSection sources"><h3>מקורות לקריאה נוספת</h3>
+ <a href="https://he.chabad.org/holidays/default_cdo/location/israel/jewish/holidays.htm" target="_blank" rel="noopener noreferrer">חגי ישראל – חב״ד</a>
+ <a href="https://www.usccb.org/prayer-worship/liturgical-year" target="_blank" rel="noopener noreferrer">השנה הכנסייתית – USCCB</a>
+ <a href="https://www.oca.org/orthodoxy/the-orthodox-faith/worship/the-church-year/church-year" target="_blank" rel="noopener noreferrer">חגי הכנסייה האורתודוקסית – OCA</a>
+ </section>
 </section>
 </main>
 
@@ -41,6 +58,7 @@
   </section>
 </div>
 
-<footer>חודשון • יישומון לימודי על חודשי השנה</footer>
+<footer>חודשון • יישומון לימודי על חודשי השנה, חגים ומועדים</footer>
+<script src="holidays.js"></script>
 <script src="app.js"></script>
 </body></html>
