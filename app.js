@@ -37,9 +37,23 @@ let currentMonthText="";
 function speak(t){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="he-IL";speechSynthesis.speak(u)}
 
 function openMonth(name,days,info){
+  speechSynthesis.cancel();
+  document.querySelector(".modalPanel").scrollTop=0;
   modalTitle.textContent=name;
   modalDays.textContent=days;
   const d=monthDetails[name]; modalDetails.innerHTML='<section class="detailSection"><h3>מידע על החודש</h3><p>'+info+'</p></section>'+ (d?'<section class="detailSection"><h3>מיקום בלוח</h3><p>'+d[0]+'</p></section><section class="detailSection"><h3>מקור השם</h3><p>'+d[1]+'</p></section><section class="detailSection"><h3>חגים, מועדים ועונות</h3><p>'+d[2]+'</p></section><section class="detailSection"><h3>כדאי לדעת</h3><p>'+d[3]+'</p></section>':'')+(monthExtra[name]?'<section class="detailSection"><h3>עוד על החודש</h3><p>'+monthExtra[name]+'</p></section>':'');
+  const linked=holidays.filter(h=>h.months.includes(name));
+  if(linked.length){
+    const section=document.createElement("section");
+    section.className="detailSection";
+    const heading=document.createElement("h3");heading.textContent="לגלות את החגים";section.appendChild(heading);
+    const note=document.createElement("p");
+    note.textContent=data.gregorian.months.some(m=>m[0]===name)?"חגים שעשויים לחול בחודש זה, לפי השנה והמסורת.":"חגים ומועדים בחודש זה.";
+    section.appendChild(note);
+    const links=document.createElement("div");links.className="holidayLinks";
+    linked.forEach(h=>{const b=document.createElement("button");b.className="speak";b.textContent=h.icon+" "+h.name;b.onclick=()=>openHoliday(h,()=>openMonth(name,days,info));links.appendChild(b)});
+    section.appendChild(links);modalDetails.appendChild(section);
+  }
   currentMonthText=name+". "+days+". "+info+(d?". מיקום בלוח: "+d[0]+". מקור השם: "+d[1]+". חגים, מועדים ועונות: "+d[2]+". כדאי לדעת: "+d[3]:"")+(monthExtra[name]?". עוד על החודש: "+monthExtra[name]:"");
   modal.hidden=false;
   document.body.classList.add("modalOpen");
@@ -65,6 +79,7 @@ function openCalendar(key){
     el.onclick=()=>openMonth(name,days,info);
     months.appendChild(el);
   });
+  document.querySelector("#holidaysView").classList.remove("active");
   home.classList.remove("active");
   cal.classList.add("active");
   scrollTo(0,0);
@@ -82,3 +97,28 @@ addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;install
 install.onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;install.hidden=true};
 addEventListener("appinstalled",()=>install.hidden=true);
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+const holidaysView=document.querySelector("#holidaysView");
+function openHolidays(group){
+  document.querySelector("#holidaysTitle").textContent=group==="jewish"?"חגים ומועדים יהודיים":"חגים ומועדים נוצריים";
+  document.querySelector("#holidaysIntro").textContent=group==="jewish"?"המועדים לפי הלוח העברי. החגים מתחילים בערב הקודם; חלק מהתעניות מתחילות בבוקר.":"המועדים משתנים לפי השנה, הלוח והמסורת הכנסייתית. מוצגים מועדים כלליים, ולא תאריכים לשנה מסוימת.";
+  const cards=document.querySelector("#holidayCards");cards.replaceChildren();
+  holidays.filter(h=>h.group===group).forEach(h=>{
+    const b=document.createElement("button");b.type="button";b.className="card monthButton";
+    const title=document.createElement("h3");title.textContent=h.icon+" "+h.name;
+    const date=document.createElement("div");date.className="meta";date.textContent=h.date;
+    const hint=document.createElement("div");hint.className="openHint";hint.textContent="לחצו לפרטים ←";
+    b.append(title,date,hint);b.onclick=()=>openHoliday(h);cards.appendChild(b);
+  });
+  home.classList.remove("active");cal.classList.remove("active");holidaysView.classList.add("active");scrollTo(0,0);
+}
+function openHoliday(h,returnToMonth){
+  speechSynthesis.cancel();
+  modalTitle.textContent=h.icon+" "+h.name;modalDays.textContent=h.date;modalDetails.replaceChildren();
+  const details=[...(h.original?[["שם במסורת הנוצרית",h.original]]:[]),["משמעות החג",h.meaning],["מקור היסטורי ודתי",h.origin],["מנהגים וסמלים",h.customs],["מסורות ומועדים",h.traditions]];
+  details.forEach(([title,text])=>{const s=document.createElement("section");s.className="detailSection";const heading=document.createElement("h3");heading.textContent=title;const p=document.createElement("p");p.textContent=text;s.append(heading,p);modalDetails.appendChild(s)});
+  if(returnToMonth){const b=document.createElement("button");b.className="speak";b.textContent="← חזרה למידע על החודש";b.onclick=returnToMonth;modalDetails.appendChild(b)}
+  currentMonthText=h.name+". "+h.date+". "+details.map(([title,text])=>title+": "+text).join(". ");
+  modal.hidden=false;document.body.classList.add("modalOpen");document.querySelector(".modalPanel").scrollTop=0;document.querySelector("#modalClose").focus();
+}
+document.querySelectorAll("[data-holidays]").forEach(b=>b.onclick=()=>openHolidays(b.dataset.holidays));
+document.querySelector("#holidaysBackBtn").onclick=()=>{speechSynthesis.cancel();holidaysView.classList.remove("active");home.classList.add("active");scrollTo(0,0)};
