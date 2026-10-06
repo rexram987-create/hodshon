@@ -7,3 +7,10 @@
 .songLinkButtons a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 16px;border-radius:12px;background:#17324d;color:#fff;text-decoration:none;font-weight:700}
 .songLinkButtons a:focus-visible{outline:3px solid #75a7d3;outline-offset:2px}
 @media(max-width:520px){.songLinkButtons{flex-direction:column}.songLinkButtons a{width:100%;box-sizing:border-box}}
+
+.christian{background:linear-gradient(135deg,#86552c,#5e391b)}
+.holidayHome{text-align:center;margin-top:30px}.holidayHome h2{color:#17324d;margin-bottom:8px}.holidayHome p{color:#536474}
+.holidayLinks{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.holidayLinks button{min-height:46px;text-align:right}
+.sources{margin-top:24px}.sources a{display:block;margin:12px 0;color:#24648b;overflow-wrap:anywhere}
+#holidaysBackBtn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer;min-height:44px}
+#holidayCards .meta{line-height:1.6}.calendarChoice:focus-visible,.speak:focus-visible{outline:3px solid #75a7d3;outline-offset:3px}
